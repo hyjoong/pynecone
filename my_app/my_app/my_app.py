@@ -1,41 +1,54 @@
-"""Welcome to Pynecone! This file outlines the steps to create a basic app."""
 from pcconfig import config
+import random
 
 import pynecone as pc
+ 
+class State(pc.State): 
+    count = 0
+    def handleIncrease(self):
+        self.count += 1
 
-docs_url = "https://pynecone.io/docs/getting-started/introduction"
-filename = f"{config.app_name}/{config.app_name}.py"
+    def handleDecrese(self):
+        self.count -= 1
 
-
-class State(pc.State):
-    """The app state."""
-
-    pass
+    def handleRandom(self):
+        self.count = random.randint(0, 100)
 
 
 def index():
     return pc.center(
         pc.vstack(
-            pc.heading("Welcome to Pynecone!", font_size="2em"),
-            pc.box("Get started by editing ", pc.code(filename, font_size="1em")),
-            pc.link(
-                "Check out our docs!",
-                href=docs_url,
-                border="0.1em solid",
-                padding="0.5em",
-                border_radius="0.5em",
-                _hover={
-                    "color": "rgb(107,99,246)",
-                },
+            pc.heading(State.count),
+            pc.hstack(
+                pc.button(
+                    "Decrement",
+                    on_click=State.handleDecrese,
+                    background_color="#F04438",
+                    color="#FFFFFF",
+                ),
+                pc.button(
+                    "Randomize",
+                    on_click=State.handleRandom,
+                    background_color="#5C55F7",
+                    color="#FFFFFF",
+                ),
+                pc.button("Increment",
+                    on_click=State.handleIncrease, 
+                    background_color="#00C896",
+                    color="#FFFFFF",
+                ),
             ),
-            spacing="1.5em",
-            font_size="2em",
+            padding="100px",
+            bg="#D3D3D3",
+            border_radius="10px",
+            box_shadow="lg",
         ),
-        padding_top="10%",
+        padding_y="200px",
+        font_size="30px",
+        text_align="center",
     )
 
 
-# Add state and page to the app.
 app = pc.App(state=State)
-app.add_page(index)
+app.add_page(index,title="counter")
 app.compile()
